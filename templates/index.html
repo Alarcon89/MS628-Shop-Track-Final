@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ShopTrack AI Maintenance Assistant</title>
+
+    <style>
+
+        /* ---------------------------------------------------------
+           PAGE COLORS AND GLOBAL SETTINGS
+           --------------------------------------------------------- */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #08111f;
+            color: white;
+        }
+
+        .page {
+            max-width: 1050px;
+            margin: auto;
+            padding: 30px 20px 50px;
+        }
+
+
+        /* ---------------------------------------------------------
+           TOP HEADER
+           --------------------------------------------------------- */
+
+        .header {
+            margin-bottom: 25px;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 34px;
+        }
+
+        .subtitle {
+            color: #9fb0c7;
+            margin-top: 8px;
+            margin-bottom: 0;
+        }
+
+        .status {
+            display: inline-block;
+            background: #123d32;
+            color: #71e5bd;
+            padding: 8px 13px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+
+        /* ---------------------------------------------------------
+           INFORMATION / WELCOME PANEL
+           --------------------------------------------------------- */
+
+        .welcome-card {
+            background: linear-gradient(135deg, #14233a, #101b2d);
+            border: 1px solid #293d59;
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-card h2 {
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+
+        .welcome-card p {
+            color: #b4c1d3;
+            line-height: 1.5;
+            margin-bottom: 0;
+        }
+
+
+        /* ---------------------------------------------------------
+           QUICK MAINTENANCE CATEGORY BUTTONS
+           --------------------------------------------------------- */
+
+        .section-title {
+            margin: 25px 0 12px;
+            font-size: 18px;
+        }
+
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .quick-button {
+            background: #15243a;
+            border: 1px solid #2e435f;
+            color: white;
+            border-radius: 12px;
+            padding: 16px 12px;
+            cursor: pointer;
+            text-align: left;
+            transition: 0.2s;
+        }
+
+        .quick-button:hover {
+            background: #1c3150;
+            border-color: #4ed6ad;
+        }
+
+        .quick-button strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #64dfb8;
+        }
+
+        .quick-button span {
+            font-size: 13px;
+            color: #aebdd0;
+        }
+
+
+        /* ---------------------------------------------------------
+           MAIN CHAT AREA
+           --------------------------------------------------------- */
+
+        .chat-card {
+            background: #111d2f;
+            border: 1px solid #2a3d57;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 15px 20px;
+            background: #16253a;
+            border-bottom: 1px solid #2a3d57;
+            font-weight: bold;
+        }
+
+        #chat {
+            min-height: 380px;
+            max-height: 520px;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .message {
+            padding: 13px 16px;
+            border-radius: 11px;
+            margin-bottom: 15px;
+            line-height: 1.55;
+            white-space: pre-wrap;
+        }
+
+        .user-message {
+            background: #205077;
+            margin-left: 18%;
+        }
+
+        .ai-message {
+            background: #1b293d;
+            margin-right: 18%;
+        }
+
+        .label {
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+
+        /* ---------------------------------------------------------
+           QUESTION INPUT AREA
+           --------------------------------------------------------- */
+
+        .input-area {
+            border-top: 1px solid #2a3d57;
+            padding: 18px;
+            background: #101a2a;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 85px;
+            resize: vertical;
+            padding: 13px;
+            border-radius: 9px;
+            border: 1px solid #425771;
+            background: #0b1524;
+            color: white;
+            font-size: 16px;
+        }
+
+        textarea:focus {
+            outline: 2px solid #48d6ad;
+            border-color: transparent;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 11px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        #sendButton {
+            background: #48d6ad;
+            color: #071611;
+            font-weight: bold;
+        }
+
+        #sendButton:hover {
+            background: #65e3bd;
+        }
+
+        #sendButton:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #clearButton {
+            background: #33465f;
+            color: white;
+        }
+
+        #messageStatus {
+            margin-top: 12px;
+            color: #9fb0c7;
+            font-size: 14px;
+        }
+
+
+        /* ---------------------------------------------------------
+           HELP SECTION
+           --------------------------------------------------------- */
+
+        .help-card {
+            margin-top: 20px;
+            background: #101b2c;
+            border: 1px solid #293c56;
+            padding: 20px;
+            border-radius: 14px;
+        }
+
+        .help-card h3 {
+            margin-top: 0;
+        }
+
+        .help-card ul {
+            color: #afbdd0;
+            line-height: 1.7;
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+
+
+        /* ---------------------------------------------------------
+           RESPONSIVE SETTINGS FOR SMALLER SCREENS
+           --------------------------------------------------------- */
+
+        @media (max-width: 800px) {
+
+            .quick-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .user-message {
+                margin-left: 5%;
+            }
+
+            .ai-message {
+                margin-right: 5%;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .quick-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 27px;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<div class="page">
+
+
+    <!-- Main application heading -->
+    <div class="header">
+
+        <div class="header-top">
+
+            <div>
+                <h1>ShopTrack AI Maintenance Assistant</h1>
+
+                <p class="subtitle">
+                    Local AI support for equipment maintenance and troubleshooting
+                </p>
+            </div>
+
+            <div class="status">
+                ● Local Llama 3.2 Online
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Introductory explanation of the application's purpose -->
+    <div class="welcome-card">
+
+        <h2>Equipment maintenance help when you need it</h2>
+
+        <p>
+            ShopTrack uses a locally running Llama 3.2 model through Ollama
+            to answer maintenance questions. Use the quick topics below or
+            type your own equipment question into the chat.
+        </p>
+
+    </div>
+
+
+    <!-- Quick-start maintenance topics -->
+    <h2 class="section-title">Quick Maintenance Topics</h2>
+
+    <div class="quick-grid">
+
+        <button
+            class="quick-button"
+            data-question="What are the basic steps for preventive maintenance on industrial equipment?"
+        >
+            <strong>Preventive Maintenance</strong>
+            <span>Inspections, schedules, and routine service</span>
+        </button>
+
+
+        <button
+            class="quick-button"
+            data-question="What are common electrical troubleshooting steps for industrial equipment?"
+        >
+            <strong>Electrical Troubleshooting</strong>
+            <span>Voltage, wiring, connections, and testing</span>
+        </button>
+
+
+        <button
+            class="quick-button"
+            data-question="What are common warning signs that an electric motor needs maintenance?"
+        >
+            <strong>Motors</strong>
+            <span>Heat, noise, vibration, and performance</span>
+        </button>
+
+
+        <button
+            class="quick-button"
+            data-question="What should I inspect when performing maintenance on welding equipment?"
+        >
+            <strong>Welding Equipment</strong>
+            <span>Connections, cables, cooling, and inspection</span>
+        </button>
+
+    </div>
+
+
+    <!-- Main AI conversation card -->
+    <div class="chat-card">
+
+        <div class="chat-header">
+            ShopTrack Maintenance Chat
+        </div>
+
+
+        <div id="chat">
+
+            <div class="message ai-message">
+
+                <div class="label">
+                    ShopTrack AI
+                </div>
+
+                Hello! I am your local equipment maintenance assistant.
+                Choose a quick topic above or ask me a maintenance question.
+
+            </div>
+
+        </div>
+
+
+        <!-- User question area -->
+        <div class="input-area">
+
+            <textarea
+                id="question"
+                placeholder="Example: What could cause an electric motor to overheat?"
+            ></textarea>
+
+
+            <div class="button-row">
+
+                <button id="sendButton">
+                    Send Question
+                </button>
+
+                <button id="clearButton">
+                    Clear Conversation
+                </button>
+
+            </div>
+
+
+            <div id="messageStatus"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Short instructions to improve usability -->
+    <div class="help-card">
+
+        <h3>How to use ShopTrack</h3>
+
+        <ul>
+            <li>Select a maintenance topic or type your own question.</li>
+            <li>ShopTrack sends the question to the local Llama 3.2 model.</li>
+            <li>Ask follow-up questions to continue the conversation.</li>
+            <li>Use Clear Conversation when you want to start over.</li>
+            <li>Always follow manufacturer procedures and workplace safety requirements.</li>
+        </ul>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /*
+        Each browser keeps its own conversation history.
+
+        This prevents different users from sharing one global
+        conversation when the Flask application receives
+        multiple requests.
+    */
+    let history = [];
+
+
+    // Store references to the page elements used by JavaScript.
+    const chat = document.getElementById("chat");
+    const questionBox = document.getElementById("question");
+    const sendButton = document.getElementById("sendButton");
+    const clearButton = document.getElementById("clearButton");
+    const messageStatus = document.getElementById("messageStatus");
+
+
+    /*
+        Adds either a user message or an AI message
+        to the conversation window.
+    */
+    function addMessage(role, content) {
+
+        const message = document.createElement("div");
+
+        message.className =
+            role === "user"
+                ? "message user-message"
+                : "message ai-message";
+
+
+        const label = document.createElement("div");
+
+        label.className = "label";
+
+        label.textContent =
+            role === "user"
+                ? "You"
+                : "ShopTrack AI";
+
+
+        const text = document.createElement("div");
+
+        text.textContent = content;
+
+
+        message.appendChild(label);
+        message.appendChild(text);
+
+        chat.appendChild(message);
+
+
+        // Automatically move the chat to the newest response.
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+
+    /*
+        Sends the user's question and current conversation
+        history to the Flask API.
+    */
+    async function sendQuestion() {
+
+        const question = questionBox.value.trim();
+
+
+        // Do not send an empty question.
+        if (!question) {
+
+            messageStatus.textContent =
+                "Please enter a maintenance question.";
+
+            return;
+        }
+
+
+        addMessage("user", question);
+
+        questionBox.value = "";
+
+        sendButton.disabled = true;
+
+
+        messageStatus.textContent =
+            "ShopTrack AI is generating a local response...";
+
+
+        try {
+
+            /*
+                Send JSON data to the Flask /api/chat route.
+
+                Flask then passes the question to Ollama,
+                which runs Llama locally on the computer.
+            */
+            const response = await fetch("/api/chat", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    question: question,
+                    history: history
+                })
+            });
+
+
+            const data = await response.json();
+
+
+            // Display a useful error if Flask reports a problem.
+            if (!response.ok) {
+
+                throw new Error(
+                    data.error || "Something went wrong."
+                );
+            }
+
+
+            addMessage(
+                "assistant",
+                data.answer
+            );
+
+
+            /*
+                Save both messages to this browser's
+                conversation history.
+            */
+            history.push({
+                role: "user",
+                content: question
+            });
+
+
+            history.push({
+                role: "assistant",
+                content: data.answer
+            });
+
+
+            messageStatus.textContent =
+                "Local AI response complete.";
+
+        }
+
+        catch (error) {
+
+            messageStatus.textContent =
+                "Error: " + error.message;
+        }
+
+        finally {
+
+            sendButton.disabled = false;
+
+            questionBox.focus();
+        }
+    }
+
+
+    /*
+        Clears only the conversation in the current browser.
+        Other users are not affected.
+    */
+    function clearConversation() {
+
+        history = [];
+
+
+        chat.innerHTML = `
+            <div class="message ai-message">
+                <div class="label">ShopTrack AI</div>
+                Conversation cleared. Choose a topic or ask another maintenance question.
+            </div>
+        `;
+
+
+        messageStatus.textContent =
+            "Conversation cleared.";
+    }
+
+
+    /*
+        Quick-topic buttons place a prepared maintenance
+        question into the input box.
+
+        The user can edit the question before sending it.
+    */
+    document
+        .querySelectorAll(".quick-button")
+        .forEach(function(button) {
+
+            button.addEventListener("click", function() {
+
+                questionBox.value =
+                    button.dataset.question;
+
+                questionBox.focus();
+            });
+        });
+
+
+    // Send button submits the current question.
+    sendButton.addEventListener(
+        "click",
+        sendQuestion
+    );
+
+
+    // Clear button starts a new conversation.
+    clearButton.addEventListener(
+        "click",
+        clearConversation
+    );
+
+
+    /*
+        Enter sends the question.
+
+        Shift + Enter creates a new line instead.
+    */
+    questionBox.addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key === "Enter"
+                && !event.shiftKey
+            ) {
+
+                event.preventDefault();
+
+                sendQuestion();
+            }
+        }
+    );
+
+</script>
+
+</body>
+</html>
